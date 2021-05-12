@@ -1,0 +1,26 @@
+name: Exercicio 2
+on:
+  push:
+    branches: [ main ]
+env:
+  NOME_ARTEFATO: "package"
+  
+jobs:
+  Job1:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Upload Artefato
+        uses: actions/upload-artifact@v2.2.3
+        with:
+          name: ${{ env.NOME_ARTEFATO }}
+          path: .
+          if-no-files-found: error     
+      
+    
+      
+    
+    
