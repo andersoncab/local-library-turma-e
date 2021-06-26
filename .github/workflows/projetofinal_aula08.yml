@@ -8,12 +8,7 @@ on:
     branches: [ main ]
   
   workflow_dispatch:
-
-env:
-  APP-HOMOL: cicd-anderson-homol
-  APP-PROD: cicd-anderson-prod
-  NOME_ARTEFATO: "package-app-node"
-
+  
 jobs:
   
   job1:
@@ -22,7 +17,7 @@ jobs:
     
     strategy:
       matrix:
-        node-version: [12.x, 14.x]
+        node-version: [12.x]
         
     steps:
       - name: Checkout
@@ -55,4 +50,40 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_CSS: true
           VALIDATE_MARKDOWN: true
-          JAVASCRIPT_DEFAULT_STYLE: prettier          
+          JAVASCRIPT_DEFAULT_STYLE: prettier
+          
+  job3:
+    name: Deploy homologacao
+    runs-on: ubuntu-latest
+    env:
+      APP-HOMOL: cicd-anderson-homol
+      DB_URI: ${{ secrets.MONGODB_URI }}
+      NODE_ENV: homologacao
+      
+    needs: [job1, job2]
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          
+      - name: Login Heroku
+        uses: akhileshns/heroku-deploy@v3.10.9 # This is the action
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: ${{ env.APP-HOMOL }}
+          heroku_email: andersoncfit@gmail.com
+          justlogin: true
+          
+      - name: Set Heroku remote existing Git repository
+        run: heroku git:remote -a ${{ env.APP-HOMOL }}
+        
+      - name: Set env variables
+        run: |
+          heroku config:set NODE_ENV=${{ env.NODE_ENV }}
+          heroku config:set MONGODB_URI=${{ env.DB_URI }}
+      
+      - name: Deploy your application to Heroku
+        run: git push heroku main
+        
