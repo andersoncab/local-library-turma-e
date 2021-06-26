@@ -55,9 +55,8 @@ jobs:
   job3:
     name: Deploy homologacao
     runs-on: ubuntu-latest
-    env:
-      APP-HOMOL: cicd-anderson-homol
-      DB_URI: $${{ secrets.MONGODB_URI }}
+    env:      
+      DB_URI: ${{ secrets.MONGODB_URI }}
       NODE_ENV: homologacao
       
     needs: [job1, job2]
@@ -72,12 +71,12 @@ jobs:
         uses: akhileshns/heroku-deploy@v3.10.9 # This is the action
         with:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          heroku_app_name: ${{ env.APP-HOMOL }}
+          heroku_app_name: cicd-anderson-homol
           heroku_email: andersoncfit@gmail.com
           justlogin: true
           
       - name: Set Heroku remote existing Git repository
-        run: heroku git:remote -a ${{ env.APP-HOMOL }}
+        run: heroku git:remote -a cicd-anderson-homol
         
       - name: Set env variables
         run: |
