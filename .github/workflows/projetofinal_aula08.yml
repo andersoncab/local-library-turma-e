@@ -9,6 +9,11 @@ on:
   
   workflow_dispatch:
 
+env:
+  APP-HOMOL: cicd-anderson-homol
+  APP-PROD: cicd-anderson-prod
+  NOME_ARTEFATO: "package-app-node"
+
 jobs:
   
   build:
@@ -31,3 +36,10 @@ jobs:
       - run: npm ci
       - run: npm run build --if-present
       - run: npm test --if-present
+      
+      - name: Upload a Build artifact
+        uses: actions/upload-artifact@v2.2.3
+        with:
+          name: ${{ env.NOME_ARTEFATO }}
+          path: .
+          if-no-files-found: error
