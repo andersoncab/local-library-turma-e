@@ -1,0 +1,50 @@
+
+name: Aula 08 - Projeto Final
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  
+  workflow_dispatch:
+
+env:
+  APP-HOMOL: cicd-anderson-homol
+  APP-PROD: cicd-anderson-prod
+  NOME_ARTEFATO: "package"
+
+jobs:
+  
+  job1:
+    name: Build e test
+    env:
+      NODE_VERSION: 12      
+    
+    runs-on: ubuntu-latest
+        
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ env.NODE_VERSION }}        
+        
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Executar o Build
+        run: npm run build
+        
+      - name: Executar o Test
+        run: npm test
+        
+      - name: Upload a Build artifact
+        uses: actions/upload-artifact@v2.2.3
+        with:
+          name: ${{ env.NOME_ARTEFATO }}
+          path: .
+          if-no-files-found: error
+      
