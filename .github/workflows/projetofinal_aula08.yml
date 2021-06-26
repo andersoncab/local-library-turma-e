@@ -16,13 +16,13 @@ env:
 
 jobs:
   
-  build:
+  job1:
     name: Build e test
     runs-on: ubuntu-latest
     
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [12.x, 14.x]
         
     steps:
       - name: Checkout
@@ -37,9 +37,22 @@ jobs:
       - run: npm run build --if-present
       - run: npm test --if-present
       
-      - name: Upload a Build artifact
-        uses: actions/upload-artifact@v2.2.3
+  job2:
+    name: Linter
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
         with:
-          name: ${{ env.NOME_ARTEFATO }}
-          path: .
-          if-no-files-found: error
+          fetch-depth: 0
+          
+      - name: Lint Code Base
+        uses: github/super-linter@v3
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_CSS: true
+          VALIDATE_MARKDOWN: true
+          JAVASCRIPT_DEFAULT_STYLE: prettier          
