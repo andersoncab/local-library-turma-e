@@ -58,7 +58,10 @@ jobs:
     env:      
       DB_URI: ${{ secrets.MONGODB_URI }}
       NODE_ENV: homologacao
-      
+    
+    environment:
+      name: 'homologacao'
+    
     needs: [job1, job2]
     
     steps:
