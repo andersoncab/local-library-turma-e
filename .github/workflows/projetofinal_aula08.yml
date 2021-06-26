@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       APP-HOMOL: cicd-anderson-homol
-      DB_URI: ${{ secrets.MONGODB_URI }}
+      DB_URI: $${{ secrets.MONGODB_URI }}
       NODE_ENV: homologacao
       
     needs: [job1, job2]
@@ -85,5 +85,4 @@ jobs:
           heroku config:set MONGODB_URI=${{ env.DB_URI }}
       
       - name: Deploy your application to Heroku
-        run: git push heroku main
-        
+        run: git push heroku main        
