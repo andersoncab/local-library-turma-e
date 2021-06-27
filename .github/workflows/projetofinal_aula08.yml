@@ -86,5 +86,45 @@ jobs:
           heroku config:set NODE_ENV=${{ env.NODE_ENV }}
           heroku config:set MONGODB_URI=${{ env.DB_URI }}
       
-      - name: Deploy your application to Heroku
-        run: git push heroku main        
+      - name: Deploy your application to homologacao environment
+        run: git push heroku main
+        
+  job4:
+    name: Deploy producao
+    runs-on: ubuntu-latest
+    env:      
+      DB_URI: ${{ secrets.MONGODB_URI }}
+      NODE_ENV: producao
+    
+    environment:
+      name: 'producao'
+      
+    needs: [job3]
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          
+      - name: Login Heroku
+        uses: akhileshns/heroku-deploy@v3.10.9 # This is the action
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: cicd-anderson-prod
+          heroku_email: andersoncfit@gmail.com
+          justlogin: true
+          
+        
+      - name: Set Heroku remote existing Git repository
+        run: heroku git:remote -a cicd-anderson-prod
+        
+      - name: Set env variables
+        run: |
+          heroku config:set NODE_ENV=${{ env.NODE_ENV }}
+          heroku config:set MONGODB_URI=${{ env.DB_URI }}
+      
+      - name: Deploy your application to production environment
+        run: git push heroku main
+        
+    
