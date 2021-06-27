@@ -1,5 +1,7 @@
 # local-library
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=andersoncab_local-library-turma-e&metric=alert_status)](https://sonarcloud.io/dashboard?id=andersoncab_local-library-turma-e)
+
 ## Creating the local project
 
 ### Create the project
