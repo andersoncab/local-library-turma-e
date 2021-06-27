@@ -51,8 +51,24 @@ jobs:
           VALIDATE_CSS: true
           VALIDATE_MARKDOWN: true
           JAVASCRIPT_DEFAULT_STYLE: prettier
-          
+  
   job3:
+    name: Analise SAST SonarCloud
+    runs-on: ubuntu-latest
+    
+    needs: [job1, job2]
+    
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}    
+  
+  job4:
     name: Deploy homologacao
     runs-on: ubuntu-latest
     env:      
@@ -62,7 +78,7 @@ jobs:
     environment:
       name: 'homologacao'
     
-    needs: [job1, job2]
+    needs: [job3]
     
     steps:
       - name: Checkout
@@ -89,7 +105,7 @@ jobs:
       - name: Deploy your application to homologacao environment
         run: git push heroku main
         
-  job4:
+  job5:
     name: Deploy producao
     runs-on: ubuntu-latest
     env:      
@@ -99,7 +115,7 @@ jobs:
     environment:
       name: 'producao'
       
-    needs: [job3]
+    needs: [job4]
     
     steps:
       - name: Checkout
